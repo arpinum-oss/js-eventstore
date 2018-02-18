@@ -1,0 +1,54 @@
+{
+  "name": "@arpinum/eventstore",
+  "version": "2.2.1",
+  "description": "Simple event store",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "tslint": "tslint --fix 'lib/**/*.ts'",
+    "jest:unit": "jest --config ./tests/jest.config.js",
+    "jest:e2e": "jest --config ./tests/jest.config.e2e.js",
+    "testw": "jest:unit --watch",
+    "prettier": "prettier --write '**/*.ts' '**/*.js'",
+    "compile": "tsc --noEmit",
+    "test": "run-s -c compile jest:unit tslint",
+    "prebuild": "rm -rf ./build",
+    "build": "tsc",
+    "preversion": "run-s test build",
+    "postversion": "git push && git push --tags && npm publish"
+  },
+  "author": "Arpinum",
+  "license": "MIT",
+  "repository": "arpinum/js-eventstore.git",
+  "keywords": [
+    "event",
+    "eventstore",
+    "ddd",
+    "cqrs",
+    "eventsourcing"
+  ],
+  "devDependencies": {
+    "@types/jest": "22.1.1",
+    "@types/knex": "0.14.5",
+    "@types/node": "8.9.1",
+    "@types/sinon": "4.1.3",
+    "jest": "22.2.1",
+    "npm-run-all": "4.1.2",
+    "prettier": "1.10.2",
+    "sinon": "4.2.2",
+    "ts-jest": "22.0.3",
+    "ts-node": "4.1.0",
+    "tslint": "5.9.1",
+    "tslint-config-prettier": "1.7.0",
+    "typescript": "2.7.1"
+  },
+  "dependencies": {
+    "@arpinum/promising": "2.2.2",
+    "knex": "0.14.3",
+    "pg": "7.4.1",
+    "pg-query-stream": "1.1.1"
+  }
+}

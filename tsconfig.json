@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "outDir": "./build",
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "alwaysStrict": true,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "types": [
+      "jest",
+      "node"
+    ],
+    "lib": [
+      "es2017"
+    ]
+  },
+  "include": [
+    "./lib/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.e2e.ts",
+    "**/*.spec.js",
+    "**/tests/*.ts"
+  ]
+}
