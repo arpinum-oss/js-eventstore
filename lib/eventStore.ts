@@ -41,31 +41,27 @@ export class EventStore {
     );
   }
 
-  public eventsFromTarget(
+  public find(
     criteria: {
-      id?: string;
       type?: string;
+      types?: string[];
+      targetId?: string;
+      targetType?: string;
+      afterId?: number
     },
     options: { batchSize?: number } = {}
   ): NodeJS.ReadableStream {
-    const { id, type } = criteria;
+    const { afterId, targetId, targetType, type, types } = criteria;
+    let query = this.table;
+    query = afterId ? query.where('id', '>', afterId) : query;
+    query = types ? query.whereIn('type', types) : query;
     const where = this.withoutUndefinedKeys({
-      target_id: id,
-      target_type: type
+      type,
+      target_id: targetId,
+      target_type: targetType
     });
-    return this.table
+    return query
       .where(where)
-      .orderBy('id', 'asc')
-      .stream({ batchSize: options.batchSize || defaultBatchSize })
-      .pipe(streamMapper(dbEventToEvent));
-  }
-
-  public eventsFromTypes(
-    types: string[],
-    options: { batchSize?: number } = {}
-  ): NodeJS.ReadableStream {
-    return this.table
-      .whereIn('type', types)
       .orderBy('id', 'asc')
       .stream({ batchSize: options.batchSize || defaultBatchSize })
       .pipe(streamMapper(dbEventToEvent));

@@ -47,7 +47,37 @@ describe('Event store', () => {
     });
   });
 
-  describe('on events from target', () => {
+  describe('on find', () => {
+    it('should return events based on a type', async () => {
+      const relevantEvent1 = createDbEvent({ type: 'Relevant' });
+      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
+      const relevantEvent2 = createDbEvent({ type: 'Relevant' });
+      const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
+      await client('events').insert(dbEvents);
+
+      const stream = eventStore.find({ type: 'Relevant' });
+
+      const events = await streamToArray(stream);
+      expect(events).toHaveLength(2);
+      expect(events[0]).toMatchObject({ id: '1', type: 'Relevant' });
+      expect(events[1]).toMatchObject({ id: '3', type: 'Relevant' });
+    });
+
+    it('should return events based on various types', async () => {
+      const relevantEvent1 = createDbEvent({ type: 'Relevant1' });
+      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
+      const relevantEvent2 = createDbEvent({ type: 'Relevant2' });
+      const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
+      await client('events').insert(dbEvents);
+
+      const stream = eventStore.find({ types: ['Relevant1', 'Relevant2'] });
+
+      const events = await streamToArray(stream);
+      expect(events).toHaveLength(2);
+      expect(events[0]).toMatchObject({ id: '1', type: 'Relevant1' });
+      expect(events[1]).toMatchObject({ id: '3', type: 'Relevant2' });
+    });
+
     it('should return events based on target type', async () => {
       const relevantEvent1 = createDbEvent({ target_type: 'Relevant' });
       const irrelevantEvent1 = createDbEvent({ target_type: 'Irrelevant' });
@@ -55,7 +85,7 @@ describe('Event store', () => {
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
-      const stream = eventStore.eventsFromTarget({ type: 'Relevant' });
+      const stream = eventStore.find({ targetType: 'Relevant' });
 
       const events = await streamToArray(stream);
       expect(events).toHaveLength(2);
@@ -70,7 +100,7 @@ describe('Event store', () => {
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
-      const stream = eventStore.eventsFromTarget({ id: '42' });
+      const stream = eventStore.find({ targetId: '42' });
 
       const events = await streamToArray(stream);
       expect(events).toHaveLength(2);
@@ -78,7 +108,23 @@ describe('Event store', () => {
       expect(events[1]).toMatchObject({ id: '3', targetId: '42' });
     });
 
-    it('should return events based on target id and type', async () => {
+    it('should return events after id if provided', async () => {
+      const irrelevantEvent1 = createDbEvent({ type: 'Relevant' });
+      const irrelevantEvent2 = createDbEvent({ type: 'Relevant' });
+      const relevantEvent1 = createDbEvent({ type: 'Relevant' });
+      const relevantEvent2 = createDbEvent({ type: 'Relevant' });
+      const dbEvents = [irrelevantEvent1, irrelevantEvent2, relevantEvent1, relevantEvent2];
+      await client('events').insert(dbEvents);
+
+      const stream = eventStore.find({ type: 'Relevant', afterId: '2' });
+
+      const events = await streamToArray(stream);
+      expect(events).toHaveLength(2);
+      expect(events[0]).toMatchObject({ id: '3' });
+      expect(events[1]).toMatchObject({ id: '4' });
+    })
+
+    it('should return events based on multiple criteria', async () => {
       const relevantEvent1 = createDbEvent({
         target_id: '42',
         target_type: 'Relevant'
@@ -103,9 +149,9 @@ describe('Event store', () => {
       ];
       await client('events').insert(dbEvents);
 
-      const stream = eventStore.eventsFromTarget({
-        id: '42',
-        type: 'Relevant'
+      const stream = eventStore.find({
+        targetId: '42',
+        targetType: 'Relevant'
       });
 
       const events = await streamToArray(stream);
@@ -119,50 +165,7 @@ describe('Event store', () => {
       const dbEvents = [irrelevantEvent1];
       await client('events').insert(dbEvents);
 
-      const stream = eventStore.eventsFromTarget({ type: 'Relevant' });
-
-      const events = await streamToArray(stream);
-      expect(events).toHaveLength(0);
-    });
-  });
-
-  describe('on events from types', () => {
-    it('should return events based on a single type', async () => {
-      const relevantEvent1 = createDbEvent({ type: 'Relevant' });
-      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
-      const relevantEvent2 = createDbEvent({ type: 'Relevant' });
-      const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
-      await client('events').insert(dbEvents);
-
-      const stream = eventStore.eventsFromTypes(['Relevant']);
-
-      const events = await streamToArray(stream);
-      expect(events).toHaveLength(2);
-      expect(events[0]).toMatchObject({ id: '1', type: 'Relevant' });
-      expect(events[1]).toMatchObject({ id: '3', type: 'Relevant' });
-    });
-
-    it('should return events based on various types', async () => {
-      const relevantEvent1 = createDbEvent({ type: 'Relevant1' });
-      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
-      const relevantEvent2 = createDbEvent({ type: 'Relevant2' });
-      const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
-      await client('events').insert(dbEvents);
-
-      const stream = eventStore.eventsFromTypes(['Relevant1', 'Relevant2']);
-
-      const events = await streamToArray(stream);
-      expect(events).toHaveLength(2);
-      expect(events[0]).toMatchObject({ id: '1', type: 'Relevant1' });
-      expect(events[1]).toMatchObject({ id: '3', type: 'Relevant2' });
-    });
-
-    it('could return no events', async () => {
-      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
-      const dbEvents = [irrelevantEvent1];
-      await client('events').insert(dbEvents);
-
-      const stream = eventStore.eventsFromTypes(['Relevant']);
+      const stream = eventStore.find({ targetType: 'Relevant' });
 
       const events = await streamToArray(stream);
       expect(events).toHaveLength(0);
