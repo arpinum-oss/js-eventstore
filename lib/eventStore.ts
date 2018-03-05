@@ -1,12 +1,25 @@
 import { wrap } from '@arpinum/promising';
 import * as Knex from 'knex';
 
+import {
+  assert,
+  assertToBeAnEvent,
+  assertToBeEventStoreOptions
+} from './defending';
 import { dbEventToEvent, eventToDbEvent } from './mapping';
 import { streamMapper } from './streaming';
-import { DbEvent, Event, NewEvent } from './types';
+import { Event, NewEvent } from './types';
 
 export interface EventStoreOptions {
   tableName?: string;
+}
+
+export interface FindCriteria {
+  type?: string;
+  types?: string[];
+  targetId?: string;
+  targetType?: string;
+  afterId?: number;
 }
 
 const defaultBatchSize = 1000;
@@ -16,6 +29,8 @@ export class EventStore {
   private options: EventStoreOptions;
 
   constructor(client: Knex, options?: EventStoreOptions) {
+    assert(client, 'client').toBePresent();
+    assertToBeEventStoreOptions(options);
     this.client = client;
     this.options = { tableName: 'events', ...options };
   }
@@ -24,33 +39,31 @@ export class EventStore {
     return wrap(() => this.client.destroy())().then(() => undefined);
   }
 
-  public add(event: NewEvent): Promise<Event> {
+  public async add(event: NewEvent): Promise<Event> {
+    assert(event, 'event').toBePresent();
+    assertToBeAnEvent(event, 'event');
     const dbEvent = eventToDbEvent(event);
-    return wrap(() => this.table.insert(dbEvent).returning('*'))().then(
-      (insertedEvents: DbEvent[]) => dbEventToEvent(insertedEvents[0])
-    );
+    const insertedEvents = await this.table.insert(dbEvent).returning('*');
+    return dbEventToEvent(insertedEvents[0]);
   }
 
-  public addAll(events: NewEvent[]): Promise<Event[]> {
+  public async addAll(events: NewEvent[]): Promise<Event[]> {
+    assert(events, 'events').toBePresent();
+    assert(events, 'events').toBeAnArray();
+    events.forEach((event, i) => assertToBeAnEvent(event, `events[${i}]`));
     if (events.length === 0) {
       return Promise.resolve([]);
     }
     const dbEvents = events.map(eventToDbEvent);
-    return wrap(() => this.table.insert(dbEvents).returning('*'))().then(
-      (insertedEvents: DbEvent[]) => insertedEvents.map(dbEventToEvent)
-    );
+    const insertedEvents = await this.table.insert(dbEvents).returning('*');
+    return insertedEvents.map(dbEventToEvent);
   }
 
   public find(
-    criteria: {
-      type?: string;
-      types?: string[];
-      targetId?: string;
-      targetType?: string;
-      afterId?: number
-    },
+    criteria: FindCriteria,
     options: { batchSize?: number } = {}
   ): NodeJS.ReadableStream {
+    this.validateFindCriteria(criteria);
     const { afterId, targetId, targetType, type, types } = criteria;
     let query = this.table;
     query = afterId ? query.where('id', '>', afterId) : query;
@@ -65,6 +78,20 @@ export class EventStore {
       .orderBy('id', 'asc')
       .stream({ batchSize: options.batchSize || defaultBatchSize })
       .pipe(streamMapper(dbEventToEvent));
+  }
+
+  private validateFindCriteria(criteria: FindCriteria) {
+    assert(criteria, 'criteria')
+      .toBePresent()
+      .toBeAnObject();
+    assert(criteria.type, 'criteria#type').toBeAString();
+    assert(criteria.types, 'criteria#types').toBeAnArray();
+    (criteria.types || []).forEach((type, i) =>
+      assert(type, `criteria#types[${i}]`).toBeAString()
+    );
+    assert(criteria.targetId, 'criteria#targetId').toBeAString();
+    assert(criteria.targetType, 'criteria#targetType').toBeAString();
+    assert(criteria.afterId, 'criteria#afterId').toBeAString();
   }
 
   private get table() {

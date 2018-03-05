@@ -11,7 +11,7 @@
     "tslint": "tslint --fix 'lib/**/*.ts'",
     "jest:unit": "jest --config ./tests/jest.config.js",
     "jest:e2e": "jest --config ./tests/jest.config.e2e.js",
-    "testw": "jest:unit --watch",
+    "testw": "jest --config ./tests/jest.config.js --watch",
     "prettier": "prettier --write '**/*.ts' '**/*.js'",
     "compile": "tsc --noEmit",
     "test": "run-s -c compile jest:unit tslint",

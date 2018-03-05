@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
 
 export interface ClientCreation {
-  connectionString?: string;
+  connectionString: string;
 }
 
 export function createClient(creation: ClientCreation): Knex {

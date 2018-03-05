@@ -4,7 +4,8 @@ import {
   connectionString,
   createAnotherEvent,
   createDbEvent,
-  createEvent
+  createEvent,
+  createMinimalEvent
 } from './tests';
 
 describe('Event store', () => {
@@ -29,6 +30,21 @@ describe('Event store', () => {
       const insertedEvent = await eventStore.add(event);
 
       expect(insertedEvent).toEqual({ ...event, id: '1' });
+    });
+
+    it('should insert minimal event to database', async () => {
+      const event = createMinimalEvent();
+
+      const insertedEvent = await eventStore.add(event);
+
+      expect(insertedEvent).toEqual({
+        id: '1',
+        type: event.type,
+        date: event.date,
+        targetId: null,
+        targetType: null,
+        payload: null
+      });
     });
   });
 
@@ -113,7 +129,12 @@ describe('Event store', () => {
       const irrelevantEvent2 = createDbEvent({ type: 'Relevant' });
       const relevantEvent1 = createDbEvent({ type: 'Relevant' });
       const relevantEvent2 = createDbEvent({ type: 'Relevant' });
-      const dbEvents = [irrelevantEvent1, irrelevantEvent2, relevantEvent1, relevantEvent2];
+      const dbEvents = [
+        irrelevantEvent1,
+        irrelevantEvent2,
+        relevantEvent1,
+        relevantEvent2
+      ];
       await client('events').insert(dbEvents);
 
       const stream = eventStore.find({ type: 'Relevant', afterId: '2' });
@@ -122,7 +143,7 @@ describe('Event store', () => {
       expect(events).toHaveLength(2);
       expect(events[0]).toMatchObject({ id: '3' });
       expect(events[1]).toMatchObject({ id: '4' });
-    })
+    });
 
     it('should return events based on multiple criteria', async () => {
       const relevantEvent1 = createDbEvent({

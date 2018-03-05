@@ -12,6 +12,13 @@ export function createEvent() {
   };
 }
 
+export function createMinimalEvent() {
+  return {
+    type: 'SomethingHappened',
+    date
+  };
+}
+
 export function createAnotherEvent() {
   return {
     type: 'OtherThingHappened',

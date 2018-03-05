@@ -1,7 +1,7 @@
 export interface NewEvent {
   type: string;
   date: Date;
-  payload?: any;
+  payload?: object;
   targetType?: string;
   targetId?: string;
 }
@@ -13,7 +13,7 @@ export interface Event extends NewEvent {
 export interface NewDbEvent {
   type: string;
   date: Date;
-  payload?: any;
+  payload?: object;
   target_type?: string;
   target_id?: string;
 }
