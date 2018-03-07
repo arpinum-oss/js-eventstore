@@ -1,5 +1,5 @@
-import * as sinon from 'sinon';
 import * as Knex from 'knex';
+import * as sinon from 'sinon';
 
 import { EventStore } from './eventStore';
 import { createDbEvent, createEvent } from './tests';
