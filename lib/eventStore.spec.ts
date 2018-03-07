@@ -1,16 +1,18 @@
 import * as sinon from 'sinon';
+import * as Knex from 'knex';
 
 import { EventStore } from './eventStore';
-import { createDbEvent, createEvent, createFakeClient } from './tests';
+import { createDbEvent, createEvent } from './tests';
 
 describe('Event store', () => {
   let client;
   let eventStore;
 
   beforeEach(async () => {
-    client = createFakeClient();
-    eventStore = new EventStore(client);
-    eventStore.insertEvents = () => Promise.resolve([createDbEvent({ id: 1 })]);
+    client = {};
+    eventStore = new EventStore({} as Knex);
+    eventStore.findInDb = () => Promise.resolve([]);
+    eventStore.insertEventsInDb = () => Promise.resolve([]);
   });
 
   describe('on creation', () => {
@@ -52,6 +54,8 @@ describe('Event store', () => {
       eventStore.onEvent(event => {
         emittedEvents.push(event);
       });
+      eventStore.insertEventsInDb = () =>
+        Promise.resolve([createDbEvent({ id: 1 })]);
 
       await eventStore.add(createEvent());
 
@@ -64,6 +68,8 @@ describe('Event store', () => {
       const removeListener = eventStore.onEvent(event => {
         emittedEvents.push(event);
       });
+      eventStore.insertEventsInDb = () =>
+        Promise.resolve([createDbEvent({ id: 1 })]);
       removeListener();
 
       await eventStore.add(createEvent());
@@ -107,7 +113,7 @@ describe('Event store', () => {
       eventStore.onEvent(event => {
         emittedEvents.push(event);
       });
-      eventStore.insertEvents = () =>
+      eventStore.insertEventsInDb = () =>
         Promise.resolve([createDbEvent({ id: 1 }), createDbEvent({ id: 2 })]);
 
       await eventStore.addAll([createEvent(), createEvent()]);

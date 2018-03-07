@@ -47,7 +47,7 @@ export class EventStore {
     assert(event, 'event').toBePresent();
     assertToBeAnEvent(event, 'event');
     const dbEvent = eventToDbEvent(event);
-    const insertedEvents = await this.insertEvents([dbEvent]);
+    const insertedEvents = await this.insertEventsInDb([dbEvent]);
     const insertedEvent = insertedEvents[0];
     const addedEvent = dbEventToEvent(insertedEvent);
     this.emitter.emit('event', addedEvent);
@@ -62,13 +62,13 @@ export class EventStore {
       return Promise.resolve([]);
     }
     const dbEvents = events.map(eventToDbEvent);
-    const insertedEvents = await this.insertEvents(dbEvents);
+    const insertedEvents = await this.insertEventsInDb(dbEvents);
     const addedEvents = insertedEvents.map(dbEventToEvent);
     addedEvents.forEach(addedEvent => this.emitter.emit('event', addedEvent));
     return addedEvents;
   }
 
-  protected async insertEvents(dbEvents: NewDbEvent[]): Promise<DbEvent[]> {
+  protected async insertEventsInDb(dbEvents: NewDbEvent[]): Promise<DbEvent[]> {
     const insertedEvents = (await this.table
       .insert(dbEvents)
       .returning('*')) as DbEvent[];
@@ -89,11 +89,20 @@ export class EventStore {
       target_id: targetId,
       target_type: targetType
     });
+    return this.findInDb(query, where, {
+      batchSize: options.batchSize || defaultBatchSize
+    }).pipe(streamMapper(dbEventToEvent));
+  }
+
+  protected findInDb(
+    query: Knex.QueryBuilder,
+    whereClause: any,
+    streamOptions: any
+  ): NodeJS.ReadableStream {
     return query
-      .where(where)
+      .where(whereClause)
       .orderBy('id', 'asc')
-      .stream({ batchSize: options.batchSize || defaultBatchSize })
-      .pipe(streamMapper(dbEventToEvent));
+      .stream({ batchSize: streamOptions.batchSize });
   }
 
   public onEvent(callback: (event: Event) => void) {
