@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 
 import { EventStore } from './eventStore';
-import { createFakeClient } from './tests';
+import { createDbEvent, createEvent, createFakeClient } from './tests';
 
 describe('Event store', () => {
   let client;
@@ -10,6 +10,7 @@ describe('Event store', () => {
   beforeEach(async () => {
     client = createFakeClient();
     eventStore = new EventStore(client);
+    eventStore.insertEvents = () => Promise.resolve([createDbEvent({ id: 1 })]);
   });
 
   describe('on creation', () => {
@@ -45,6 +46,30 @@ describe('Event store', () => {
           expect(rejection.message).toEqual('event must be an object')
       );
     });
+
+    it('should emit added event', async () => {
+      const emittedEvents = [];
+      eventStore.onEvent(event => {
+        emittedEvents.push(event);
+      });
+
+      await eventStore.add(createEvent());
+
+      expect(emittedEvents).toHaveLength(1);
+      expect(emittedEvents[0].id).toEqual(1);
+    });
+
+    it('could stop listening to added events', async () => {
+      const emittedEvents = [];
+      const removeListener = eventStore.onEvent(event => {
+        emittedEvents.push(event);
+      });
+      removeListener();
+
+      await eventStore.add(createEvent());
+
+      expect(emittedEvents).toHaveLength(0);
+    });
   });
 
   describe('on add all', () => {
@@ -75,6 +100,21 @@ describe('Event store', () => {
         rejection =>
           expect(rejection.message).toEqual('events[0] must be an object')
       );
+    });
+
+    it('should emit added events', async () => {
+      const emittedEvents = [];
+      eventStore.onEvent(event => {
+        emittedEvents.push(event);
+      });
+      eventStore.insertEvents = () =>
+        Promise.resolve([createDbEvent({ id: 1 }), createDbEvent({ id: 2 })]);
+
+      await eventStore.addAll([createEvent(), createEvent()]);
+
+      expect(emittedEvents).toHaveLength(2);
+      expect(emittedEvents[0].id).toEqual(1);
+      expect(emittedEvents[1].id).toEqual(2);
     });
   });
 

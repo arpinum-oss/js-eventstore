@@ -1,6 +1,7 @@
 import { wrap } from '@arpinum/promising';
 import * as Knex from 'knex';
 
+import { EventEmitter } from 'events';
 import {
   assert,
   assertToBeAnEvent,
@@ -8,7 +9,7 @@ import {
 } from './defending';
 import { dbEventToEvent, eventToDbEvent } from './mapping';
 import { streamMapper } from './streaming';
-import { Event, NewEvent } from './types';
+import { DbEvent, Event, NewDbEvent, NewEvent } from './types';
 
 export interface EventStoreOptions {
   tableName?: string;
@@ -27,15 +28,18 @@ const defaultBatchSize = 1000;
 export class EventStore {
   private client: Knex;
   private options: EventStoreOptions;
+  private emitter: NodeJS.EventEmitter;
 
   constructor(client: Knex, options?: EventStoreOptions) {
     assert(client, 'client').toBePresent();
     assertToBeEventStoreOptions(options);
     this.client = client;
     this.options = { tableName: 'events', ...options };
+    this.emitter = new EventEmitter();
   }
 
   public destroy(): Promise<void> {
+    this.emitter.removeAllListeners();
     return wrap(() => this.client.destroy())().then(() => undefined);
   }
 
@@ -43,8 +47,11 @@ export class EventStore {
     assert(event, 'event').toBePresent();
     assertToBeAnEvent(event, 'event');
     const dbEvent = eventToDbEvent(event);
-    const insertedEvents = await this.table.insert(dbEvent).returning('*');
-    return dbEventToEvent(insertedEvents[0]);
+    const insertedEvents = await this.insertEvents([dbEvent]);
+    const insertedEvent = insertedEvents[0];
+    const addedEvent = dbEventToEvent(insertedEvent);
+    this.emitter.emit('event', addedEvent);
+    return addedEvent;
   }
 
   public async addAll(events: NewEvent[]): Promise<Event[]> {
@@ -55,8 +62,17 @@ export class EventStore {
       return Promise.resolve([]);
     }
     const dbEvents = events.map(eventToDbEvent);
-    const insertedEvents = await this.table.insert(dbEvents).returning('*');
-    return insertedEvents.map(dbEventToEvent);
+    const insertedEvents = await this.insertEvents(dbEvents);
+    const addedEvents = insertedEvents.map(dbEventToEvent);
+    addedEvents.forEach(addedEvent => this.emitter.emit('event', addedEvent));
+    return addedEvents;
+  }
+
+  protected async insertEvents(dbEvents: NewDbEvent[]): Promise<DbEvent[]> {
+    const insertedEvents = (await this.table
+      .insert(dbEvents)
+      .returning('*')) as DbEvent[];
+    return insertedEvents;
   }
 
   public find(
@@ -78,6 +94,12 @@ export class EventStore {
       .orderBy('id', 'asc')
       .stream({ batchSize: options.batchSize || defaultBatchSize })
       .pipe(streamMapper(dbEventToEvent));
+  }
+
+  public onEvent(callback: (event: Event) => void) {
+    const localCallback = (data: any) => callback(data);
+    this.emitter.on('event', localCallback);
+    return () => this.emitter.removeListener('event', localCallback);
   }
 
   private validateFindCriteria(criteria: FindCriteria) {
