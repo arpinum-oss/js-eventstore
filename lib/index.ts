@@ -24,16 +24,26 @@ export async function createSchema(
   clientCreation: ClientCreation
 ): Promise<void> {
   assertToBeAClientCreation(clientCreation);
-  const client = createClient(clientCreation);
-  await dbCreateSchema(client);
-  await client.destroy();
+  let client;
+  try {
+    client = createClient(clientCreation);
+    await dbCreateSchema(client);
+  } finally {
+    if (client) {
+      await client.destroy();
+    }
+  }
 }
 
 export async function dropSchema(
   clientCreation: ClientCreation
 ): Promise<void> {
   assertToBeAClientCreation(clientCreation);
-  const client = createClient(clientCreation);
-  await dbDropSchema(client);
-  await client.destroy();
+  let client;
+  try {
+    client = createClient(clientCreation);
+    await dbDropSchema(client);
+  } finally {
+    await client.destroy();
+  }
 }
