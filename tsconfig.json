@@ -12,17 +12,10 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": [
-      "jest",
-      "node"
-    ],
-    "lib": [
-      "es2017"
-    ]
+    "types": ["jest", "node"],
+    "lib": ["es2017"]
   },
-  "include": [
-    "./lib/**/*"
-  ],
+  "include": ["./lib/**/*"],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
