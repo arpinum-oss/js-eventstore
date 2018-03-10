@@ -9,7 +9,7 @@ The event store allows you to persist events in a database and query them with s
 
 ## Installation
 
-```bash
+```
 npm install @arpinum/eventstore --save
 ```
 
