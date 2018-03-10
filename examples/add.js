@@ -12,12 +12,12 @@ async function main() {
     eventStore = createEventStore({ connectionString });
 
     await eventStore.add({
-      type: 'SomethingHappened',
+      type: 'UserSignedUp',
       date: new Date(),
-      targetType: 'Something',
-      targetId: '42',
+      targetType: 'User',
+      targetId: 'bf04b429-4c88-46de-a2ae-15624c75fd56',
       payload: {
-        thing: 1337
+        login: 'johndoe'
       }
     });
 

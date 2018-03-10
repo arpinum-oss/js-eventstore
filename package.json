@@ -1,18 +1,16 @@
 {
   "name": "@arpinum/eventstore",
   "version": "2.2.1",
-  "description": "Simple event store",
+  "description": "Simple event store based on PostgreSQL",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "files": [
-    "build"
-  ],
+  "files": ["build"],
   "scripts": {
     "tslint": "tslint --fix 'lib/**/*.ts'",
     "jest:unit": "jest --config ./tests/jest.config.js",
     "jest:e2e": "jest --config ./tests/jest.config.e2e.js",
     "testw": "jest --config ./tests/jest.config.js --watch",
-    "prettier": "prettier --write '**/*.ts' '**/*.js'",
+    "prettier": "prettier --write '**/*.ts' '**/*.js' '**/*.md'",
     "compile": "tsc --noEmit",
     "test": "run-s -c compile jest:unit tslint",
     "prebuild": "rm -rf ./build",
@@ -23,13 +21,7 @@
   "author": "Arpinum",
   "license": "MIT",
   "repository": "arpinum/js-eventstore.git",
-  "keywords": [
-    "event",
-    "eventstore",
-    "ddd",
-    "cqrs",
-    "eventsourcing"
-  ],
+  "keywords": ["event", "eventstore", "ddd", "cqrs", "eventsourcing"],
   "devDependencies": {
     "@types/jest": "22.2.0",
     "@types/knex": "0.14.8",
