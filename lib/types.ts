@@ -1,4 +1,4 @@
-export interface NewEvent {
+export interface EventValue {
   type: string;
   date: Date;
   payload?: object;
@@ -6,11 +6,11 @@ export interface NewEvent {
   targetId?: string;
 }
 
-export interface Event extends NewEvent {
+export interface Event extends EventValue {
   id: string;
 }
 
-export interface NewDbEvent {
+export interface DbEventValue {
   type: string;
   date: Date;
   payload?: object;
@@ -18,6 +18,6 @@ export interface NewDbEvent {
   target_id?: string;
 }
 
-export interface DbEvent extends NewDbEvent {
+export interface DbEvent extends DbEventValue {
   id: string;
 }

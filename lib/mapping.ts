@@ -1,6 +1,6 @@
-import { DbEvent, Event, NewDbEvent, NewEvent } from './types';
+import { DbEvent, DbEventValue, Event, EventValue } from './types';
 
-export function eventToDbEvent(event: NewEvent): NewDbEvent {
+export function eventToDbEvent(event: EventValue): DbEventValue {
   return {
     type: event.type,
     date: event.date,

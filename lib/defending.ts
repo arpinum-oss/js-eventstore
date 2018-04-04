@@ -1,6 +1,6 @@
-import { ClientCreation } from './database';
+import { Connection } from './database';
 import { EventStoreOptions } from './eventStore';
-import { NewEvent } from './types';
+import { EventValue } from './types';
 
 export class Assert {
   private name: string;
@@ -65,7 +65,7 @@ export function assert(value: any, name = 'value'): Assert {
   return new Assert(value, name);
 }
 
-export function assertToBeAnEvent(event: NewEvent, name = 'event') {
+export function assertToBeAnEvent(event: EventValue, name = 'event') {
   if (absent(event)) {
     return;
   }
@@ -79,16 +79,16 @@ export function assertToBeAnEvent(event: NewEvent, name = 'event') {
   assert(event.targetId, `${name}#targetId`).toBeAString();
 }
 
-export function assertToBeAClientCreation(
-  clientCreation: ClientCreation,
-  name = 'clientCreation'
+export function assertToBeAConnection(
+  connection: Connection,
+  name = 'connection'
 ) {
-  if (absent(clientCreation)) {
+  if (absent(connection)) {
     return;
   }
-  assert(clientCreation, name).toBeAnObject();
+  assert(connection, name).toBeAnObject();
   assert(
-    clientCreation.connectionString,
+    connection.connectionString,
     `${name}#connectionString`
   ).toBeAString();
 }

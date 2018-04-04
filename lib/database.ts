@@ -1,11 +1,11 @@
 import * as Knex from 'knex';
 
-export interface ClientCreation {
+export interface Connection {
   connectionString: string;
 }
 
-export function createClient(creation: ClientCreation): Knex {
-  const { connectionString } = creation;
+export function createClient(connection: Connection): Knex {
+  const { connectionString } = connection;
   return Knex({
     client: 'pg',
     connection: connectionString

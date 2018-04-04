@@ -9,7 +9,7 @@ import {
 } from './defending';
 import { dbEventToEvent, eventToDbEvent } from './mapping';
 import { streamMapper } from './streaming';
-import { DbEvent, Event, NewDbEvent, NewEvent } from './types';
+import { DbEvent, DbEventValue, Event, EventValue } from './types';
 
 export interface EventStoreOptions {
   tableName?: string;
@@ -43,7 +43,7 @@ export class EventStore {
     return wrap(() => this.client.destroy())().then(() => undefined);
   }
 
-  public async add(event: NewEvent): Promise<Event> {
+  public async add(event: EventValue): Promise<Event> {
     assert(event, 'event').toBePresent();
     assertToBeAnEvent(event, 'event');
     const dbEvent = eventToDbEvent(event);
@@ -54,7 +54,7 @@ export class EventStore {
     return addedEvent;
   }
 
-  public async addAll(events: NewEvent[]): Promise<Event[]> {
+  public async addAll(events: EventValue[]): Promise<Event[]> {
     assert(events, 'events').toBePresent();
     assert(events, 'events').toBeAnArray();
     events.forEach((event, i) => assertToBeAnEvent(event, `events[${i}]`));
@@ -68,7 +68,7 @@ export class EventStore {
     return addedEvents;
   }
 
-  protected async insertEventsInDb(dbEvents: NewDbEvent[]): Promise<DbEvent[]> {
+  protected async insertEventsInDb(dbEvents: DbEventValue[]): Promise<DbEvent[]> {
     const insertedEvents = (await this.table
       .insert(dbEvents)
       .returning('*')) as DbEvent[];

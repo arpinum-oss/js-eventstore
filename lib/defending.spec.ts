@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 
-import { ClientCreation } from './database';
+import { Connection } from './database';
 import * as defending from './defending';
 import { assert, assertToBeEventStoreOptions } from './defending';
 import { createEvent } from './tests';
@@ -245,31 +245,29 @@ describe('Defending module', () => {
     });
   });
 
-  describe('on assert to be a client creation', () => {
+  describe('on assert to be a connection', () => {
     it('should do nothing when value is absent', () => {
       defending.assertToBeEventStoreOptions(null);
     });
 
-    it('should do nothing when client creation is valid', () => {
-      defending.assertToBeAClientCreation({ connectionString: 'connec' });
+    it('should do nothing when connection is valid', () => {
+      defending.assertToBeAConnection({ connectionString: 'connec' });
     });
 
-    it('should require client creation to be an object', () => {
+    it('should require connection to be an object', () => {
       const assertion = () =>
-        defending.assertToBeAClientCreation((3 as any) as ClientCreation);
+        defending.assertToBeAConnection((3 as any) as Connection);
 
-      expect(assertion).toThrow('clientCreation must be an object');
+      expect(assertion).toThrow('connection must be an object');
     });
 
     it('should require connection string to be a string', () => {
       const assertion = () =>
-        defending.assertToBeAClientCreation({
+        defending.assertToBeAConnection({
           connectionString: 3 as any
-        } as ClientCreation);
+        } as Connection);
 
-      expect(assertion).toThrow(
-        'clientCreation#connectionString must be a string'
-      );
+      expect(assertion).toThrow('connection#connectionString must be a string');
     });
   });
 });

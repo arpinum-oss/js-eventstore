@@ -1,32 +1,32 @@
 import {
-  ClientCreation,
+  Connection,
   createClient,
   createSchema as dbCreateSchema,
   dropSchema as dbDropSchema
 } from './database';
 import {
-  assertToBeAClientCreation,
+  assertToBeAConnection,
   assertToBeEventStoreOptions
 } from './defending';
 import { EventStore, EventStoreOptions } from './eventStore';
 
 export function createEventStore(
-  clientCreation: ClientCreation,
+  connection: Connection,
   options?: EventStoreOptions
 ): EventStore {
-  assertToBeAClientCreation(clientCreation);
+  assertToBeAConnection(connection);
   assertToBeEventStoreOptions(options);
-  const client = createClient(clientCreation);
+  const client = createClient(connection);
   return new EventStore(client, options);
 }
 
 export async function createSchema(
-  clientCreation: ClientCreation
+  connection: Connection
 ): Promise<void> {
-  assertToBeAClientCreation(clientCreation);
+  assertToBeAConnection(connection);
   let client;
   try {
-    client = createClient(clientCreation);
+    client = createClient(connection);
     await dbCreateSchema(client);
   } finally {
     if (client) {
@@ -36,12 +36,12 @@ export async function createSchema(
 }
 
 export async function dropSchema(
-  clientCreation: ClientCreation
+  connection: Connection
 ): Promise<void> {
-  assertToBeAClientCreation(clientCreation);
+  assertToBeAConnection(connection);
   let client;
   try {
-    client = createClient(clientCreation);
+    client = createClient(connection);
     await dbDropSchema(client);
   } finally {
     await client.destroy();

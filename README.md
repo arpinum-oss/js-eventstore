@@ -1,6 +1,6 @@
 # @arpinum/eventstore [![Build Status](https://travis-ci.org/arpinum-oss/js-eventstore.svg?branch=master)](https://travis-ci.org/arpinum-oss/js-eventstore)
 
-> We won't really know what will happen until it happens.
+> We won't really know what will happen until it happens.  
 > <cite>Helen Thomas</cite>
 
 _@arpinum/eventstore_ contains a simple event store based on PostgreSQL.
