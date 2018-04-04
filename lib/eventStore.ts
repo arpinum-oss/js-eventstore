@@ -1,4 +1,3 @@
-import { wrap } from '@arpinum/promising';
 import * as Knex from 'knex';
 
 import { EventEmitter } from 'events';
@@ -38,9 +37,9 @@ export class EventStore {
     this.emitter = new EventEmitter();
   }
 
-  public close(): Promise<void> {
+  public async close(): Promise<void> {
     this.emitter.removeAllListeners();
-    return wrap(() => this.client.destroy())().then(() => undefined);
+    await this.client.destroy();
   }
 
   public async add(event: EventValue): Promise<Event> {
@@ -68,7 +67,9 @@ export class EventStore {
     return addedEvents;
   }
 
-  protected async insertEventsInDb(dbEvents: DbEventValue[]): Promise<DbEvent[]> {
+  protected async insertEventsInDb(
+    dbEvents: DbEventValue[]
+  ): Promise<DbEvent[]> {
     const insertedEvents = (await this.table
       .insert(dbEvents)
       .returning('*')) as DbEvent[];
@@ -119,10 +120,12 @@ export class EventStore {
       .stream({ batchSize: streamOptions.batchSize });
   }
 
-  public onEvent(callback: (event: Event) => void) {
+  public onEvent(callback: (event: Event) => void): () => void {
     const localCallback = (data: any) => callback(data);
     this.emitter.on('event', localCallback);
-    return () => this.emitter.removeListener('event', localCallback);
+    return () => {
+      this.emitter.removeListener('event', localCallback);
+    };
   }
 
   private get table() {

@@ -12,8 +12,12 @@ export function createClient(connection: Connection): Knex {
   });
 }
 
-export function createSchema(client: Knex) {
-  return client.schema.createTable('events', table => {
+export async function createSchema(
+  client: Knex,
+  options?: { tableName?: string }
+): Promise<void> {
+  const { tableName } = { tableName: 'events', ...options };
+  await client.schema.createTable(tableName, table => {
     table.bigIncrements('id');
     table.dateTime('date');
     table.string('type').index();
@@ -23,6 +27,10 @@ export function createSchema(client: Knex) {
   });
 }
 
-export function dropSchema(client: Knex) {
-  return client.schema.dropTable('events');
+export async function dropSchema(
+  client: Knex,
+  options?: { tableName?: string }
+): Promise<void> {
+  const { tableName } = { tableName: 'events', ...options };
+  await client.schema.dropTable(tableName);
 }

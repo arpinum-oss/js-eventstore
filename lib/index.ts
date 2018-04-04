@@ -20,9 +20,7 @@ export function createEventStore(
   return new EventStore(client, options);
 }
 
-export async function createSchema(
-  connection: Connection
-): Promise<void> {
+export async function createSchema(connection: Connection): Promise<void> {
   assertToBeAConnection(connection);
   let client;
   try {
@@ -35,9 +33,7 @@ export async function createSchema(
   }
 }
 
-export async function dropSchema(
-  connection: Connection
-): Promise<void> {
+export async function dropSchema(connection: Connection): Promise<void> {
   assertToBeAConnection(connection);
   let client;
   try {

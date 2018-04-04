@@ -1,8 +1,8 @@
-# createEventStore(connection, [options={}])
+# createEventStore(connection, options)
 
-* `connection` `Object` Connection information used to connect to database. Must match [connection contract].
-* `options` `Object`
-  * `[tableName]` `string` Table name to store events in database.
+* `connection: Connection` Connection information used to connect to database.
+* `options?: Object`
+  * `tableName?: string` Table name to store events in database. Defaults to `events`.
 * returns `EventStore`
 
 Creates an [EventStore] object that can add and find events in database.
@@ -15,12 +15,12 @@ const store = createEventStore({
 });
 ```
 
-# EventStore object
+# EventStore class
 
 ## store.add(event)
 
-* `event` `Object` Event to add in store. Must match [event value contract].
-* returns: `Promise` Contains the added event matching [event contract].
+* `event: EventValue` Event to add in store.
+* returns: `Promise<Event>` Contains the added event.
 
 Persists the provided event and returns a copy of it with a generated id.
 
@@ -44,8 +44,8 @@ Full example in [/examples/add.js](/examples/add.js).
 
 ## store.addAll(events)
 
-* `events` `Object[]` Events to add in store. They all must match [event value contract].
-* returns: `Promise` Contains an array with the added events matching [event contract]. The resulting array preserves insertion order.
+* `events` `Array<EventValue>` Events to add in store.
+* returns: `Promise<Array<Event>>` Contains an array with the added events which preserves insertion order.
 
 Persists the provided events and returns an array containing copies of them with theirs generated id.
 
@@ -59,6 +59,8 @@ Full example in [/examples/addAll.js](/examples/addAll.js).
 
 ## store.close()
 
+* returns: `Promise<void>`
+
 Dispose all resources properly like database connection.
 
 Example:
@@ -69,14 +71,20 @@ store.close().then(() => console.log('Store closed'));
 
 ## store.find(criteria, options)
 
-* `criteria` `Object`
-  * `type` `string`
-  * `types` `string[]`
-  * `targetId` `string`
-  * `targetType` `string`
-  * `afterId` `number`
-* `options` `Object`
-  * `batchSize` `number` Defaults to 1000.
+* `criteria: Object` Criteria to select relevant events.
+  * `type?: string` Selects events having the type.
+  * `types?: Array<string>` Selects events having one of the types.
+  * `targetId?: string` Selects events having the target id.
+  * `targetType?: string` Selects events having the target type.
+  * `afterId?: number` Selects events having an id greater than the provided one.
+* `options?: Object`
+  * `batchSize?: number` Number of events to load at once from the database. Defaults to 1000.
+* returns: `EventEmitter`
+  * Emits each relevant event on `data`.
+  * Emits errors on `error`.
+  * Emits `end` when all relevant events are emitted.
+
+Finds all events matching criteria using an event emitter for results.
 
 Example:
 
@@ -92,6 +100,11 @@ Full example in [/examples/find.js](/examples/find.js).
 
 ## store.onEvent(callback)
 
+* `callback: (event: Event) => void` Function called with and for each added event to the store.
+* returns `() => void` Function used to remove the callback from listeners.
+
+Registers a listener to be notified for each added event to the store.
+
 Example:
 
 ```javascript
@@ -105,9 +118,12 @@ removeListener();
 
 Full example in [/examples/onEvent.js](/examples/onEvent.js).
 
-# createSchema(connection)
+# createSchema(connection, options)
 
-* `connection` `Object` Connection information used to connect to database. Must match [connection contract].
+* `connection: Connection` Connection information used to connect to database.
+* `options?: Object`
+  * `tableName?: string` Table name to store events in database. Defaults to `events`.
+* returns `Promise<void>`
 
 Example:
 
@@ -117,11 +133,17 @@ createSchema({
 }).then(() => console.log('Schema created'));
 ```
 
+Creates the database schema dedicated to the event store.
+
 Full example in [/examples/createSchema.js](/examples/createSchema.js).
 
 # dropSchema(connection)
 
-* `connection` `Object` Connection information used to connect to database. Must match [connection contract].
+* `connection: Connection` Connection information used to connect to database.
+* `options?: Object`
+  * `tableName?: string` Table name to store events in database. Defaults to `events`.
+
+Drops the database schema dedicated to the event store.
 
 Example:
 
@@ -133,13 +155,20 @@ dropSchema({
 
 Full example in [/examples/dropSchema.js](/examples/dropSchema.js).
 
-# Connection contract
+# Connection interface
 
 Database connection can be established with following properties:
 
-* `connectionString` `string`
+* `connectionString: string`
 
-[eventstore]: #eventstore-object
-[event contract]: #event-contract
-[event value contract]: #eventvalue-contract
-[connection contract]: #connection-contract
+# EventValue interface
+
+# Event interface
+
+# Database schema
+
+[eventstore]: #eventstore-class
+[connection]: #connection-interface
+[eventvalue]: #eventvalue-interface
+[event]: #event-interface
+[database schema]: #database-schema

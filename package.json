@@ -4,7 +4,9 @@
   "description": "Simple event store based on PostgreSQL",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "files": ["build"],
+  "files": [
+    "build"
+  ],
   "scripts": {
     "tslint": "tslint --fix 'lib/**/*.ts'",
     "jest:unit": "jest --config ./tests/jest.config.js",
@@ -21,7 +23,13 @@
   "author": "Arpinum",
   "license": "MIT",
   "repository": "arpinum/js-eventstore.git",
-  "keywords": ["event", "eventstore", "ddd", "cqrs", "eventsourcing"],
+  "keywords": [
+    "event",
+    "eventstore",
+    "ddd",
+    "cqrs",
+    "eventsourcing"
+  ],
   "devDependencies": {
     "@types/jest": "22.2.0",
     "@types/knex": "0.14.8",
@@ -38,7 +46,6 @@
     "typescript": "2.7.2"
   },
   "dependencies": {
-    "@arpinum/promising": "2.2.2",
     "knex": "0.14.4",
     "pg": "7.4.1",
     "pg-query-stream": "1.1.1"

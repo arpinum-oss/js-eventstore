@@ -87,10 +87,7 @@ export function assertToBeAConnection(
     return;
   }
   assert(connection, name).toBeAnObject();
-  assert(
-    connection.connectionString,
-    `${name}#connectionString`
-  ).toBeAString();
+  assert(connection.connectionString, `${name}#connectionString`).toBeAString();
 }
 
 export function assertToBeEventStoreOptions(
