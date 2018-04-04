@@ -11,15 +11,17 @@ async function main() {
   try {
     store = createEventStore({ connectionString });
 
-    await store.add(createEvent({ type: 'UserLoggedIn' }));
-    await store.add(createEvent({ type: 'Irrelevant' }));
-    await store.add(createEvent({ type: 'UserLoggedIn' }));
+    const removeListener = store.onEvent(event =>
+      console.log('Event added:', event.type)
+    );
 
-    store
-      .find({ type: 'UserLoggedIn' })
-      .on('data', event => console.log('Event found:', event))
-      .on('end', () => console.log('All events found'))
-      .on('error', console.error);
+    await store.add(createEvent({ type: 'UserSignedUp' }));
+    await store.add(createEvent({ type: 'UserLoggedIn' }));
+    await store.add(createEvent({ type: 'UserLoggedOut' }));
+
+    removeListener();
+
+    await store.add(createEvent({ type: 'NoMoreRegistered' }));
   } catch (e) {
     console.error(e);
     process.exit(1);

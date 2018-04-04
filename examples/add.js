@@ -7,11 +7,11 @@ const connectionString = 'postgres://postgres@localhost:5432/eventstoretests';
 main();
 
 async function main() {
-  let eventStore;
+  let store;
   try {
-    eventStore = createEventStore({ connectionString });
+    store = createEventStore({ connectionString });
 
-    await eventStore.add({
+    await store.add({
       type: 'UserSignedUp',
       date: new Date(),
       targetType: 'User',
@@ -26,8 +26,8 @@ async function main() {
     console.error(e);
     process.exit(1);
   } finally {
-    if (eventStore) {
-      await eventStore.destroy();
+    if (store) {
+      await store.close();
     }
   }
 }

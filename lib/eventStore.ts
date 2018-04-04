@@ -38,7 +38,7 @@ export class EventStore {
     this.emitter = new EventEmitter();
   }
 
-  public destroy(): Promise<void> {
+  public close(): Promise<void> {
     this.emitter.removeAllListeners();
     return wrap(() => this.client.destroy())().then(() => undefined);
   }
@@ -94,6 +94,20 @@ export class EventStore {
     }).pipe(streamMapper(dbEventToEvent));
   }
 
+  private validateFindCriteria(criteria: FindCriteria) {
+    assert(criteria, 'criteria')
+      .toBePresent()
+      .toBeAnObject();
+    assert(criteria.type, 'criteria#type').toBeAString();
+    assert(criteria.types, 'criteria#types').toBeAnArray();
+    (criteria.types || []).forEach((type, i) =>
+      assert(type, `criteria#types[${i}]`).toBeAString()
+    );
+    assert(criteria.targetId, 'criteria#targetId').toBeAString();
+    assert(criteria.targetType, 'criteria#targetType').toBeAString();
+    assert(criteria.afterId, 'criteria#afterId').toBeAString();
+  }
+
   protected findInDb(
     query: Knex.QueryBuilder,
     whereClause: any,
@@ -109,20 +123,6 @@ export class EventStore {
     const localCallback = (data: any) => callback(data);
     this.emitter.on('event', localCallback);
     return () => this.emitter.removeListener('event', localCallback);
-  }
-
-  private validateFindCriteria(criteria: FindCriteria) {
-    assert(criteria, 'criteria')
-      .toBePresent()
-      .toBeAnObject();
-    assert(criteria.type, 'criteria#type').toBeAString();
-    assert(criteria.types, 'criteria#types').toBeAnArray();
-    (criteria.types || []).forEach((type, i) =>
-      assert(type, `criteria#types[${i}]`).toBeAString()
-    );
-    assert(criteria.targetId, 'criteria#targetId').toBeAString();
-    assert(criteria.targetType, 'criteria#targetType').toBeAString();
-    assert(criteria.afterId, 'criteria#afterId').toBeAString();
   }
 
   private get table() {

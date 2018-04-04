@@ -17,9 +17,9 @@ npm install @arpinum/eventstore --save
 
 ```javascript
 const connectionString = 'postgres://postgres@localhost:5432/eventstore';
-const eventStore = createEventStore({ connectionString });
+const store = createEventStore({ connectionString });
 
-await eventStore.add({
+await store.add({
   type: 'UserSignedUp',
   date: new Date(),
   targetType: 'User',
@@ -29,10 +29,12 @@ await eventStore.add({
   }
 });
 
-await eventStore
+await store
   .find({ type: 'UserSignedUp' })
   .on('data', event => console.log('Event found:', event));
 ```
+
+More examples in [examples](examples).
 
 ## Docs
 

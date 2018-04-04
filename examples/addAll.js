@@ -11,15 +11,9 @@ async function main() {
   try {
     store = createEventStore({ connectionString });
 
-    await store.add(createEvent({ type: 'UserLoggedIn' }));
-    await store.add(createEvent({ type: 'Irrelevant' }));
-    await store.add(createEvent({ type: 'UserLoggedIn' }));
+    await store.addAll([createEvent(), createEvent(), createEvent()]);
 
-    store
-      .find({ type: 'UserLoggedIn' })
-      .on('data', event => console.log('Event found:', event))
-      .on('end', () => console.log('All events found'))
-      .on('error', console.error);
+    console.log('Events added');
   } catch (e) {
     console.error(e);
     process.exit(1);
