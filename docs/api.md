@@ -1,9 +1,9 @@
 # createEventStore(connection, options)
 
-* `connection: Connection` Connection information used to connect to database.
+* `connection: Connection` - [Connection] information used to connect to database.
 * `options?: Object`
   * `tableName?: string` Table name to store events in database. Defaults to `events`.
-* returns `EventStore`
+* returns `EventStore` - An [EventStore] object
 
 Creates an [EventStore] object that can add and find events in database.
 
@@ -19,8 +19,8 @@ const store = createEventStore({
 
 ## store.add(event)
 
-* `event: EventValue` Event to add in store.
-* returns: `Promise<Event>` Contains the added event.
+* `event: EventValue` - Event matching [EventValue] to add in store.
+* returns: `Promise<Event>` - Contains the added [Event].
 
 Persists the provided event and returns a copy of it with a generated id.
 
@@ -44,8 +44,8 @@ Full example in [/examples/add.js](/examples/add.js).
 
 ## store.addAll(events)
 
-* `events` `Array<EventValue>` Events to add in store.
-* returns: `Promise<Array<Event>>` Contains an array with the added events which preserves insertion order.
+* `events: Array<EventValue>` - Events matching [EventValue] to add in store.
+* returns: `Promise<Array<Event>>` - Contains an array with the added [Event] objects which preserves insertion order.
 
 Persists the provided events and returns an array containing copies of them with theirs generated id.
 
@@ -71,16 +71,16 @@ store.close().then(() => console.log('Store closed'));
 
 ## store.find(criteria, options)
 
-* `criteria: Object` Criteria to select relevant events.
-  * `type?: string` Selects events having the type.
-  * `types?: Array<string>` Selects events having one of the types.
-  * `targetId?: string` Selects events having the target id.
-  * `targetType?: string` Selects events having the target type.
-  * `afterId?: number` Selects events having an id greater than the provided one.
+* `criteria: Object` - Criteria to select relevant events.
+  * `type?: string` - Selects events having the type.
+  * `types?: Array<string>` - Selects events having one of the types.
+  * `targetId?: string` - Selects events having the target id.
+  * `targetType?: string` - Selects events having the target type.
+  * `afterId?: number` - Selects events having an id greater than the provided one.
 * `options?: Object`
-  * `batchSize?: number` Number of events to load at once from the database. Defaults to 1000.
+  * `batchSize?: number` - Number of events to load at once from the database. Defaults to 1000.
 * returns: `EventEmitter`
-  * Emits each relevant event on `data`.
+  * Emits each relevant [Event] object on `data`.
   * Emits errors on `error`.
   * Emits `end` when all relevant events are emitted.
 
@@ -100,10 +100,10 @@ Full example in [/examples/find.js](/examples/find.js).
 
 ## store.onEvent(callback)
 
-* `callback: (event: Event) => void` Function called with and for each added event to the store.
-* returns `() => void` Function used to remove the callback from listeners.
+* `callback: (event: Event) => void` - Function called with and for each added [Event] object to the store.
+* returns `() => void` - Function used to remove the callback from listeners.
 
-Registers a listener to be notified for each added event to the store.
+Registers a listener to be notified for each added [Event] object to the store.
 
 Example:
 
@@ -120,10 +120,12 @@ Full example in [/examples/onEvent.js](/examples/onEvent.js).
 
 # createSchema(connection, options)
 
-* `connection: Connection` Connection information used to connect to database.
+* `connection: Connection` - [Connection] information used to connect to database.
 * `options?: Object`
-  * `tableName?: string` Table name to store events in database. Defaults to `events`.
+  * `tableName?: string` - Table name to store events in database. Defaults to `events`.
 * returns `Promise<void>`
+
+Creates the [database schema] dedicated to the event store.
 
 Example:
 
@@ -133,17 +135,15 @@ createSchema({
 }).then(() => console.log('Schema created'));
 ```
 
-Creates the database schema dedicated to the event store.
-
 Full example in [/examples/createSchema.js](/examples/createSchema.js).
 
 # dropSchema(connection)
 
-* `connection: Connection` Connection information used to connect to database.
+* `connection: Connection` - [Connection] information used to connect to database.
 * `options?: Object`
-  * `tableName?: string` Table name to store events in database. Defaults to `events`.
+  * `tableName?: string` - Table name to store events in database. Defaults to `events`.
 
-Drops the database schema dedicated to the event store.
+Drops the [database schema] dedicated to the event store.
 
 Example:
 
@@ -163,9 +163,37 @@ Database connection can be established with following properties:
 
 # EventValue interface
 
+An EventValue object represents an event to be added and must have following properties:
+
+* `type: string` - The type describing what occurred (e.g. UserLoggedIn, BlogPostDeleted).
+* `date: Date` - The date (with time maybe) when the event occurred.
+* `targetId?: string` - If the event concerns an entity you can provide it (e.g. uuid as string, 3, "apple").
+* `targetType?: string` - If the event concerns an entity of a given type you can provide it (e.g. User, BlogPost).
+* `payload?: Object` - Any data relevant to the event (e.g. `{ name: "John" }`). Should be a plain object since it will be serialized to json.
+
 # Event interface
 
+An Event object represents a stored event and must have following properties:
+
+* `id: string` - A number stored as string (because of max number length). Ids are sequential meaning if an event's id is greater than another event's one, it occurred after the other one.
+* `type: string` - See [EventValue].
+* `date: Date` - See [EventValue].
+* `targetId?: string` - See [EventValue].
+* `targetType?: string` - See [EventValue].
+* `payload?: Object` - See [EventValue].
+
 # Database schema
+
+The schema contains a single table named events by default.
+
+The columns are:
+
+* `id: bigserial` The primary key with auto increment
+* `date: timestamp with tz`
+* `type: varchar(255)`
+* `target_type: varchar(255)`
+* `target_id: varchar(255)`
+* `payload: jsonb`
 
 [eventstore]: #eventstore-class
 [connection]: #connection-interface

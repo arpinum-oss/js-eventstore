@@ -1,9 +1,9 @@
 export interface EventValue {
   type: string;
   date: Date;
-  payload?: object;
   targetType?: string;
   targetId?: string;
+  payload?: object;
 }
 
 export interface Event extends EventValue {
@@ -13,9 +13,9 @@ export interface Event extends EventValue {
 export interface DbEventValue {
   type: string;
   date: Date;
-  payload?: object;
   target_type?: string;
   target_id?: string;
+  payload?: object;
 }
 
 export interface DbEvent extends DbEventValue {
