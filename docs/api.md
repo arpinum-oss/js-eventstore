@@ -167,9 +167,23 @@ An EventValue object represents an event to be added and must have following pro
 
 * `type: string` - The type describing what occurred (e.g. UserLoggedIn, BlogPostDeleted).
 * `date: Date` - The date (with time maybe) when the event occurred.
-* `targetId?: string` - If the event concerns an entity you can provide it (e.g. uuid as string, 3, "apple").
+* `targetId?: string` - If the event concerns an entity you can provide it (e.g. uuid as string, `3`, `"apple"`).
 * `targetType?: string` - If the event concerns an entity of a given type you can provide it (e.g. User, BlogPost).
 * `payload?: Object` - Any data relevant to the event (e.g. `{ name: "John" }`). Should be a plain object since it will be serialized to json.
+
+Example:
+
+```javascript
+{
+  type: 'UserSignedUp',
+  date: new Date(),
+  targetType: 'User',
+  targetId: 'bf04b429-4c88-46de-a2ae-15624c75fd56',
+  payload: {
+    login: 'johndoe'
+  }
+}
+```
 
 # Event interface
 
@@ -181,6 +195,21 @@ An Event object represents a stored event and must have following properties:
 * `targetId?: string` - See [EventValue].
 * `targetType?: string` - See [EventValue].
 * `payload?: Object` - See [EventValue].
+
+Example:
+
+```javascript
+{
+  id: 13,
+  type: 'UserSignedUp',
+  date: new Date(),
+  targetType: 'User',
+  targetId: 'bf04b429-4c88-46de-a2ae-15624c75fd56',
+  payload: {
+    login: 'johndoe'
+  }
+}
+```
 
 # Database schema
 
