@@ -22,7 +22,7 @@
   },
   "author": "Arpinum",
   "license": "MIT",
-  "repository": "arpinum/js-eventstore.git",
+  "repository": "arpinum-oss/js-eventstore.git",
   "keywords": [
     "event",
     "eventstore",
