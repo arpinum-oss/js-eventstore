@@ -1,11 +1,11 @@
-import { assert } from '@arpinum/defender';
+import { assert, is } from '@arpinum/defender';
 
 import { Connection } from './database';
 import { EventStoreOptions } from './eventStore';
 import { EventValue } from './types';
 
 export function assertToBeAnEvent(event: EventValue, name = 'event') {
-  if (absent(event)) {
+  if (is(event).absent()) {
     return;
   }
   assert(event, name).toBeAnObject();
@@ -22,7 +22,7 @@ export function assertToBeAConnection(
   connection: Connection,
   name = 'connection'
 ) {
-  if (absent(connection)) {
+  if (is(connection).absent()) {
     return;
   }
   assert(connection, name).toBeAnObject();
@@ -33,13 +33,9 @@ export function assertToBeEventStoreOptions(
   options: EventStoreOptions,
   name = 'options'
 ) {
-  if (absent(options)) {
+  if (is(options).absent()) {
     return;
   }
   assert(options, name).toBeAnObject();
   assert(options.tableName, `${name}options#tableName`).toBeAString();
-}
-
-function absent(value: any) {
-  return value === null || value === undefined;
 }

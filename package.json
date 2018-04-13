@@ -31,23 +31,23 @@
     "eventsourcing"
   ],
   "devDependencies": {
-    "@types/jest": "22.2.0",
-    "@types/knex": "0.14.8",
-    "@types/node": "9.4.6",
-    "@types/sinon": "4.3.0",
-    "jest": "22.4.2",
+    "@types/jest": "22.2.3",
+    "@types/knex": "0.14.9",
+    "@types/node": "9.6.4",
+    "@types/sinon": "4.3.1",
+    "jest": "22.4.3",
     "npm-run-all": "4.1.2",
-    "prettier": "1.11.1",
-    "sinon": "4.4.2",
-    "ts-jest": "22.4.1",
+    "prettier": "1.12.0",
+    "sinon": "4.5.0",
+    "ts-jest": "22.4.2",
     "ts-node": "5.0.1",
     "tslint": "5.9.1",
-    "tslint-config-prettier": "1.9.0",
-    "typescript": "2.7.2"
+    "tslint-config-prettier": "1.10.0",
+    "typescript": "2.8.1"
   },
   "dependencies": {
-    "@arpinum/defender": "0.0.3",
-    "knex": "0.14.4",
+    "@arpinum/defender": "0.0.4",
+    "knex": "0.14.6",
     "pg": "7.4.1",
     "pg-query-stream": "1.1.1"
   }
