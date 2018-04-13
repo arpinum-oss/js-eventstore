@@ -46,6 +46,7 @@
     "typescript": "2.7.2"
   },
   "dependencies": {
+    "@arpinum/defender": "0.0.3",
     "knex": "0.14.4",
     "pg": "7.4.1",
     "pg-query-stream": "1.1.1"

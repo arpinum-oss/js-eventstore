@@ -1,11 +1,8 @@
+import { assert } from '@arpinum/defender';
 import * as Knex from 'knex';
 
 import { EventEmitter } from 'events';
-import {
-  assert,
-  assertToBeAnEvent,
-  assertToBeEventStoreOptions
-} from './defending';
+import { assertToBeAnEvent, assertToBeEventStoreOptions } from './defending';
 import { dbEventToEvent, eventToDbEvent } from './mapping';
 import { streamMapper } from './streaming';
 import { DbEvent, DbEventValue, Event, EventValue } from './types';
