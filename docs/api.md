@@ -3,7 +3,7 @@
 * `connection: Connection` - [Connection] information used to connect to database.
 * `options?: Object`
   * `tableName?: string` Table name to store events in database. Defaults to `events`.
-* returns `EventStore` - An [EventStore] object
+* returns `EventStore` - An [EventStore] object.
 
 Creates an [EventStore] object that can add and find events in database.
 
@@ -217,7 +217,7 @@ The schema contains a single table named events by default.
 
 The columns are:
 
-* `id: bigserial` The primary key with auto increment
+* `id: bigserial` - The primary key with auto increment.
 * `date: timestamp with tz`
 * `type: varchar(255)`
 * `target_type: varchar(255)`
