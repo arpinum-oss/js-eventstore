@@ -1,8 +1,12 @@
-version: '2'
+version: '3'
 services:
   postgres:
     image: postgres:10.2
     ports:
       - 5432:5432
+    volumes:
+      - "./postgresql.conf:/postgresql.conf"
+      - ".:/logs"
     environment:
       POSTGRES_DB: eventstoretests
+    command: "-c config_file=/postgresql.conf"
