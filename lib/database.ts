@@ -17,14 +17,16 @@ export async function createSchema(
   options?: { tableName?: string }
 ): Promise<void> {
   const { tableName } = { tableName: 'events', ...options };
-  await client.schema.createTable(tableName, table => {
-    table.bigIncrements('id');
-    table.dateTime('date');
-    table.string('type').index();
-    table.string('target_type').index();
-    table.string('target_id').index();
-    table.jsonb('payload');
-  });
+  await client.transaction(trx =>
+    trx.schema.createTable(tableName, table => {
+      table.bigIncrements('id');
+      table.dateTime('date');
+      table.string('type').index();
+      table.string('target_type').index();
+      table.string('target_id').index();
+      table.jsonb('payload');
+    })
+  );
 }
 
 export async function dropSchema(
@@ -32,5 +34,5 @@ export async function dropSchema(
   options?: { tableName?: string }
 ): Promise<void> {
   const { tableName } = { tableName: 'events', ...options };
-  await client.schema.dropTable(tableName);
+  await client.transaction(trx => trx.schema.dropTable(tableName));
 }

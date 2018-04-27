@@ -67,9 +67,11 @@ export class EventStore {
   protected async insertEventsInDb(
     dbEvents: DbEventValue[]
   ): Promise<DbEvent[]> {
-    const insertedEvents = (await this.table
-      .insert(dbEvents)
-      .returning('*')) as DbEvent[];
+    const insertedEvents = (await this.client.transaction(trx =>
+      trx(this.options.tableName)
+        .insert(dbEvents)
+        .returning('*')
+    )) as DbEvent[];
     return insertedEvents;
   }
 
@@ -79,7 +81,7 @@ export class EventStore {
   ): NodeJS.ReadableStream {
     this.validateFindCriteria(criteria);
     const { afterId, targetId, targetType, type, types } = criteria;
-    let query = this.table;
+    let query = this.client(this.options.tableName);
     query = afterId ? query.where('id', '>', afterId) : query;
     query = types ? query.whereIn('type', types) : query;
     const where = this.withoutUndefinedKeys({
@@ -123,10 +125,6 @@ export class EventStore {
     return () => {
       this.emitter.removeListener('event', localCallback);
     };
-  }
-
-  private get table() {
-    return this.client(this.options.tableName);
   }
 
   private withoutUndefinedKeys(object: object): object {
