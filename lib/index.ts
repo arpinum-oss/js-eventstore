@@ -40,6 +40,8 @@ export async function dropSchema(connection: Connection): Promise<void> {
     client = createClient(connection);
     await dbDropSchema(client);
   } finally {
-    await client.destroy();
+    if (client) {
+      await client.destroy();
+    }
   }
 }

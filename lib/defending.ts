@@ -30,12 +30,12 @@ export function assertToBeAConnection(
 }
 
 export function assertToBeEventStoreOptions(
-  options: EventStoreOptions,
+  options?: EventStoreOptions,
   name = 'options'
 ) {
   if (is(options).absent()) {
     return;
   }
   assert(options, name).toBeAnObject();
-  assert(options.tableName, `${name}options#tableName`).toBeAString();
+  assert(options!.tableName, `${name}options#tableName`).toBeAString();
 }
