@@ -1,8 +1,5 @@
-import * as sinon from 'sinon';
-
 import { Connection } from './database';
 import * as defending from './defending';
-import { assertToBeEventStoreOptions } from './defending';
 import { createEvent } from './tests';
 import { EventValue } from './types';
 
@@ -100,7 +97,7 @@ describe('Defending module', () => {
 
   describe('on assert to be event store options', () => {
     it('should do nothing when value is absent', () => {
-      defending.assertToBeEventStoreOptions(null);
+      defending.assertToBeEventStoreOptions(null as any);
     });
 
     it('should allow minimal information', () => {
@@ -117,7 +114,7 @@ describe('Defending module', () => {
 
   describe('on assert to be a connection', () => {
     it('should do nothing when value is absent', () => {
-      defending.assertToBeEventStoreOptions(null);
+      defending.assertToBeEventStoreOptions(null as any);
     });
 
     it('should do nothing when connection is valid', () => {

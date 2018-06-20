@@ -33,6 +33,7 @@ export function createAnotherEvent() {
 
 export function createDbEvent(override = {}) {
   return {
+    id: '1',
     type: 'SomethingHappened',
     date,
     target_type: 'Something',

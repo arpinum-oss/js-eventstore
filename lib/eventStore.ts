@@ -16,15 +16,15 @@ export interface FindCriteria {
   types?: string[];
   targetId?: string;
   targetType?: string;
-  afterId?: number;
+  afterId?: string;
 }
 
 const defaultBatchSize = 1000;
 
 export class EventStore {
-  private client: Knex;
-  private options: EventStoreOptions;
-  private emitter: NodeJS.EventEmitter;
+  private readonly client: Knex;
+  private readonly options: EventStoreOptions;
+  private readonly emitter: NodeJS.EventEmitter;
 
   constructor(client: Knex, options?: EventStoreOptions) {
     assert(client, 'client').toBePresent();

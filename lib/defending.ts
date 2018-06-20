@@ -2,20 +2,21 @@ import { assert, is } from '@arpinum/defender';
 
 import { Connection } from './database';
 import { EventStoreOptions } from './eventStore';
-import { EventValue } from './types';
+import { Event, EventValue } from './types';
 
-export function assertToBeAnEvent(event: EventValue, name = 'event') {
+export function assertToBeAnEvent(event: EventValue | null | undefined, name = 'event') {
   if (is(event).absent()) {
     return;
   }
-  assert(event, name).toBeAnObject();
-  assert(event.type, `${name}#type`).toBePresent();
-  assert(event.type, `${name}#type`).toBeAString();
-  assert(event.date, `${name}#date`).toBePresent();
-  assert(event.date, `${name}#date`).toBeADate();
-  assert(event.payload, `${name}#payload`).toBeAnObject();
-  assert(event.targetType, `${name}#targetType`).toBeAString();
-  assert(event.targetId, `${name}#targetId`).toBeAString();
+  const presentEvent = event as Event;
+  assert(presentEvent, name).toBeAnObject();
+  assert(presentEvent.type, `${name}#type`).toBePresent();
+  assert(presentEvent.type, `${name}#type`).toBeAString();
+  assert(presentEvent.date, `${name}#date`).toBePresent();
+  assert(presentEvent.date, `${name}#date`).toBeADate();
+  assert(presentEvent.payload, `${name}#payload`).toBeAnObject();
+  assert(presentEvent.targetType, `${name}#targetType`).toBeAString();
+  assert(presentEvent.targetId, `${name}#targetId`).toBeAString();
 }
 
 export function assertToBeAConnection(

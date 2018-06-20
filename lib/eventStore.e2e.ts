@@ -1,3 +1,4 @@
+import Knex = require('knex');
 import { createClient, createSchema, dropSchema } from './database';
 import { EventStore } from './eventStore';
 import {
@@ -7,10 +8,11 @@ import {
   createEvent,
   createMinimalEvent
 } from './tests';
+import { Event } from './types';
 
 describe('Event store', () => {
-  let client;
-  let eventStore;
+  let client: Knex;
+  let eventStore: EventStore;
 
   beforeEach(async () => {
     client = createClient({ connectionString });
@@ -193,9 +195,9 @@ describe('Event store', () => {
     });
   });
 
-  function streamToArray(stream: NodeJS.ReadableStream): Promise<any[]> {
+  function streamToArray(stream: NodeJS.ReadableStream): Promise<Event[]> {
     return new Promise((resolve, reject) => {
-      const result = [];
+      const result: Event[] = [];
       stream.on('data', data => result.push(data));
       stream.on('end', () => resolve(result));
       stream.on('close', () => resolve(result));

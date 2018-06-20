@@ -13,10 +13,10 @@
     "jest:e2e": "jest --config ./tests/jest.config.e2e.js",
     "testw": "jest --config ./tests/jest.config.js --watch",
     "prettier": "prettier --write '**/*.{js,json,md,ts}'",
-    "compile": "tsc --noEmit",
+    "compile": "tsc",
     "test": "run-s -c compile jest:unit tslint",
     "prebuild": "rm -rf ./build",
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.prod.json",
     "preversion": "run-s test build",
     "postversion": "git push && git push --tags && npm publish"
   },
