@@ -4,7 +4,10 @@ import { Connection } from './database';
 import { EventStoreOptions } from './eventStore';
 import { Event, EventValue } from './types';
 
-export function assertToBeAnEvent(event: EventValue | null | undefined, name = 'event') {
+export function assertToBeAnEvent(
+  event: EventValue | null | undefined,
+  name = 'event'
+) {
   if (is(event).absent()) {
     return;
   }
