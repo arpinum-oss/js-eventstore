@@ -67,9 +67,9 @@ describe('Event store', () => {
 
   describe('on find', () => {
     it('should return events based on a type', async () => {
-      const relevantEvent1 = createDbEvent({ type: 'Relevant' });
-      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
-      const relevantEvent2 = createDbEvent({ type: 'Relevant' });
+      const relevantEvent1 = createDbEvent({ id: '1', type: 'Relevant' });
+      const irrelevantEvent1 = createDbEvent({ id: '2', type: 'Irrelevant' });
+      const relevantEvent2 = createDbEvent({ id: '3', type: 'Relevant' });
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
@@ -82,9 +82,9 @@ describe('Event store', () => {
     });
 
     it('should return events based on various types', async () => {
-      const relevantEvent1 = createDbEvent({ type: 'Relevant1' });
-      const irrelevantEvent1 = createDbEvent({ type: 'Irrelevant' });
-      const relevantEvent2 = createDbEvent({ type: 'Relevant2' });
+      const relevantEvent1 = createDbEvent({ id: '1', type: 'Relevant1' });
+      const irrelevantEvent1 = createDbEvent({ id: '2', type: 'Irrelevant' });
+      const relevantEvent2 = createDbEvent({ id: '3', type: 'Relevant2' });
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
@@ -97,9 +97,18 @@ describe('Event store', () => {
     });
 
     it('should return events based on target type', async () => {
-      const relevantEvent1 = createDbEvent({ target_type: 'Relevant' });
-      const irrelevantEvent1 = createDbEvent({ target_type: 'Irrelevant' });
-      const relevantEvent2 = createDbEvent({ target_type: 'Relevant' });
+      const relevantEvent1 = createDbEvent({
+        id: '1',
+        target_type: 'Relevant'
+      });
+      const irrelevantEvent1 = createDbEvent({
+        id: '2',
+        target_type: 'Irrelevant'
+      });
+      const relevantEvent2 = createDbEvent({
+        id: '3',
+        target_type: 'Relevant'
+      });
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
@@ -112,9 +121,9 @@ describe('Event store', () => {
     });
 
     it('should return events based on target id', async () => {
-      const relevantEvent1 = createDbEvent({ target_id: '42' });
-      const irrelevantEvent1 = createDbEvent({ target_id: '1337' });
-      const relevantEvent2 = createDbEvent({ target_id: '42' });
+      const relevantEvent1 = createDbEvent({ id: '1', target_id: '42' });
+      const irrelevantEvent1 = createDbEvent({ id: '2', target_id: '1337' });
+      const relevantEvent2 = createDbEvent({ id: '3', target_id: '42' });
       const dbEvents = [relevantEvent1, irrelevantEvent1, relevantEvent2];
       await client('events').insert(dbEvents);
 
@@ -127,10 +136,10 @@ describe('Event store', () => {
     });
 
     it('should return events after id if provided', async () => {
-      const irrelevantEvent1 = createDbEvent({ type: 'Relevant' });
-      const irrelevantEvent2 = createDbEvent({ type: 'Relevant' });
-      const relevantEvent1 = createDbEvent({ type: 'Relevant' });
-      const relevantEvent2 = createDbEvent({ type: 'Relevant' });
+      const irrelevantEvent1 = createDbEvent({ id: '1', type: 'Relevant' });
+      const irrelevantEvent2 = createDbEvent({ id: '2', type: 'Relevant' });
+      const relevantEvent1 = createDbEvent({ id: '3', type: 'Relevant' });
+      const relevantEvent2 = createDbEvent({ id: '4', type: 'Relevant' });
       const dbEvents = [
         irrelevantEvent1,
         irrelevantEvent2,
@@ -149,18 +158,22 @@ describe('Event store', () => {
 
     it('should return events based on multiple criteria', async () => {
       const relevantEvent1 = createDbEvent({
+        id: '1',
         target_id: '42',
         target_type: 'Relevant'
       });
       const irrelevantEvent1 = createDbEvent({
+        id: '2',
         target_id: '42',
         target_type: 'Irrelevant'
       });
       const relevantEvent2 = createDbEvent({
+        id: '3',
         target_id: '42',
         target_type: 'Relevant'
       });
       const irrelevantEvent2 = createDbEvent({
+        id: '4',
         target_id: '1337',
         target_type: 'Relevant'
       });
@@ -184,7 +197,10 @@ describe('Event store', () => {
     });
 
     it('could return no events', async () => {
-      const irrelevantEvent1 = createDbEvent({ target_type: 'Irrelevant' });
+      const irrelevantEvent1 = createDbEvent({
+        id: '1',
+        target_type: 'Irrelevant'
+      });
       const dbEvents = [irrelevantEvent1];
       await client('events').insert(dbEvents);
 
