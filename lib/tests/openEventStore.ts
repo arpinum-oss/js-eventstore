@@ -1,6 +1,6 @@
-import Knex = require('knex');
-import { EventStore } from '../eventStore';
-import { DbEvent, DbEventValue } from '../types';
+import Knex = require("knex");
+import { EventStore } from "../eventStore";
+import { DbEvent, DbEventValue } from "../types";
 
 export class OpenEventStore extends EventStore {
   public findInDb(
@@ -9,7 +9,7 @@ export class OpenEventStore extends EventStore {
     _3: any
   ): NodeJS.ReadableStream {
     return {
-      pipe: () => undefined
+      pipe: () => undefined,
     } as any;
   }
 

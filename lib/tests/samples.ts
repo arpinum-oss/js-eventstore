@@ -2,45 +2,45 @@ const date = new Date();
 
 export function createEvent() {
   return {
-    type: 'SomethingHappened',
+    type: "SomethingHappened",
     date,
-    targetType: 'Something',
-    targetId: '42',
+    targetType: "Something",
+    targetId: "42",
     payload: {
-      thing: 1337
-    }
+      thing: 1337,
+    },
   };
 }
 
 export function createMinimalEvent() {
   return {
-    type: 'SomethingHappened',
-    date
+    type: "SomethingHappened",
+    date,
   };
 }
 
 export function createAnotherEvent() {
   return {
-    type: 'OtherThingHappened',
+    type: "OtherThingHappened",
     date,
-    targetType: 'OtherThing',
-    targetId: '10',
+    targetType: "OtherThing",
+    targetId: "10",
     payload: {
-      thing: 28
-    }
+      thing: 28,
+    },
   };
 }
 
 export function createDbEvent(override = {}) {
   return {
-    id: '1',
-    type: 'SomethingHappened',
+    id: "1",
+    type: "SomethingHappened",
     date,
-    target_type: 'Something',
-    target_id: '42',
+    target_type: "Something",
+    target_id: "42",
     payload: {
-      thing: 1337
+      thing: 1337,
     },
-    ...override
+    ...override,
   };
 }

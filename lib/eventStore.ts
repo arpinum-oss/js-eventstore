@@ -1,11 +1,11 @@
-import { assert } from '@arpinum/defender';
-import * as Knex from 'knex';
+import { assert } from "@arpinum/defender";
+import * as Knex from "knex";
 
-import { EventEmitter } from 'events';
-import { assertToBeAnEvent, assertToBeEventStoreOptions } from './defending';
-import { dbEventToEvent, eventToDbEvent } from './mapping';
-import { streamMapper } from './streaming';
-import { DbEvent, DbEventValue, Event, EventValue } from './types';
+import { EventEmitter } from "events";
+import { assertToBeAnEvent, assertToBeEventStoreOptions } from "./defending";
+import { dbEventToEvent, eventToDbEvent } from "./mapping";
+import { streamMapper } from "./streaming";
+import { DbEvent, DbEventValue, Event, EventValue } from "./types";
 
 export interface EventStoreOptions {
   tableName?: string;
@@ -27,10 +27,10 @@ export class EventStore {
   private readonly emitter: NodeJS.EventEmitter;
 
   constructor(client: Knex, options?: EventStoreOptions) {
-    assert(client, 'client').toBePresent();
+    assert(client, "client").toBePresent();
     assertToBeEventStoreOptions(options);
     this.client = client;
-    this.options = { tableName: 'events', ...options };
+    this.options = { tableName: "events", ...options };
     this.emitter = new EventEmitter();
   }
 
@@ -40,19 +40,19 @@ export class EventStore {
   }
 
   public async add(event: EventValue): Promise<Event> {
-    assert(event, 'event').toBePresent();
-    assertToBeAnEvent(event, 'event');
+    assert(event, "event").toBePresent();
+    assertToBeAnEvent(event, "event");
     const dbEvent = eventToDbEvent(event);
     const insertedEvents = await this.insertEventsInDb([dbEvent]);
     const insertedEvent = insertedEvents[0];
     const addedEvent = dbEventToEvent(insertedEvent);
-    this.emitter.emit('event', addedEvent);
+    this.emitter.emit("event", addedEvent);
     return addedEvent;
   }
 
   public async addAll(events: EventValue[]): Promise<Event[]> {
-    assert(events, 'events').toBePresent();
-    assert(events, 'events').toBeAnArray();
+    assert(events, "events").toBePresent();
+    assert(events, "events").toBeAnArray();
     events.forEach((event, i) => assertToBeAnEvent(event, `events[${i}]`));
     if (events.length === 0) {
       return Promise.resolve([]);
@@ -60,17 +60,15 @@ export class EventStore {
     const dbEvents = events.map(eventToDbEvent);
     const insertedEvents = await this.insertEventsInDb(dbEvents);
     const addedEvents = insertedEvents.map(dbEventToEvent);
-    addedEvents.forEach(addedEvent => this.emitter.emit('event', addedEvent));
+    addedEvents.forEach((addedEvent) => this.emitter.emit("event", addedEvent));
     return addedEvents;
   }
 
   protected async insertEventsInDb(
     dbEvents: DbEventValue[]
   ): Promise<DbEvent[]> {
-    const insertedEvents = (await this.client.transaction(trx =>
-      trx(this.options.tableName)
-        .insert(dbEvents)
-        .returning('*')
+    const insertedEvents = (await this.client.transaction((trx) =>
+      trx(this.options.tableName).insert(dbEvents).returning("*")
     )) as DbEvent[];
     return insertedEvents;
   }
@@ -82,30 +80,28 @@ export class EventStore {
     this.validateFindCriteria(criteria);
     const { afterId, targetId, targetType, type, types } = criteria;
     let query = this.client(this.options.tableName);
-    query = afterId ? query.where('id', '>', afterId) : query;
-    query = types ? query.whereIn('type', types) : query;
+    query = afterId ? query.where("id", ">", afterId) : query;
+    query = types ? query.whereIn("type", types) : query;
     const where = this.withoutUndefinedKeys({
       type,
       target_id: targetId,
-      target_type: targetType
+      target_type: targetType,
     });
     return this.findInDb(query, where, {
-      batchSize: options.batchSize || defaultBatchSize
+      batchSize: options.batchSize || defaultBatchSize,
     }).pipe(streamMapper(dbEventToEvent));
   }
 
   private validateFindCriteria(criteria: FindCriteria) {
-    assert(criteria, 'criteria')
-      .toBePresent()
-      .toBeAnObject();
-    assert(criteria.type, 'criteria#type').toBeAString();
-    assert(criteria.types, 'criteria#types').toBeAnArray();
+    assert(criteria, "criteria").toBePresent().toBeAnObject();
+    assert(criteria.type, "criteria#type").toBeAString();
+    assert(criteria.types, "criteria#types").toBeAnArray();
     (criteria.types || []).forEach((type, i) =>
       assert(type, `criteria#types[${i}]`).toBeAString()
     );
-    assert(criteria.targetId, 'criteria#targetId').toBeAString();
-    assert(criteria.targetType, 'criteria#targetType').toBeAString();
-    assert(criteria.afterId, 'criteria#afterId').toBeAString();
+    assert(criteria.targetId, "criteria#targetId").toBeAString();
+    assert(criteria.targetType, "criteria#targetType").toBeAString();
+    assert(criteria.afterId, "criteria#afterId").toBeAString();
   }
 
   protected findInDb(
@@ -115,15 +111,15 @@ export class EventStore {
   ): NodeJS.ReadableStream {
     return query
       .where(whereClause)
-      .orderBy('id', 'asc')
+      .orderBy("id", "asc")
       .stream({ batchSize: streamOptions.batchSize });
   }
 
   public onEvent(callback: (event: Event) => void): () => void {
     const localCallback = (data: any) => callback(data);
-    this.emitter.on('event', localCallback);
+    this.emitter.on("event", localCallback);
     return () => {
-      this.emitter.removeListener('event', localCallback);
+      this.emitter.removeListener("event", localCallback);
     };
   }
 

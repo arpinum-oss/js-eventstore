@@ -2,13 +2,13 @@ import {
   Connection,
   createClient,
   createSchema as dbCreateSchema,
-  dropSchema as dbDropSchema
-} from './database';
+  dropSchema as dbDropSchema,
+} from "./database";
 import {
   assertToBeAConnection,
-  assertToBeEventStoreOptions
-} from './defending';
-import { EventStore, EventStoreOptions } from './eventStore';
+  assertToBeEventStoreOptions,
+} from "./defending";
+import { EventStore, EventStoreOptions } from "./eventStore";
 
 export function createEventStore(
   connection: Connection,

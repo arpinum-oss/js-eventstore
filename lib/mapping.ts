@@ -1,4 +1,4 @@
-import { DbEvent, DbEventValue, Event, EventValue } from './types';
+import { DbEvent, DbEventValue, Event, EventValue } from "./types";
 
 export function eventToDbEvent(event: EventValue): DbEventValue {
   return {
@@ -6,7 +6,7 @@ export function eventToDbEvent(event: EventValue): DbEventValue {
     date: event.date,
     payload: event.payload,
     target_type: event.targetType,
-    target_id: event.targetId
+    target_id: event.targetId,
   };
 }
 
@@ -17,6 +17,6 @@ export function dbEventToEvent(dbEvent: DbEvent): Event {
     date: dbEvent.date,
     payload: dbEvent.payload,
     targetType: dbEvent.target_type,
-    targetId: dbEvent.target_id
+    targetId: dbEvent.target_id,
   };
 }

@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const { createEventStore } = require('../build');
+const { createEventStore } = require("../build");
 
-const connectionString = 'postgres://postgres@localhost:5432/eventstoretests';
+const connectionString = "postgres://postgres@localhost:5432/eventstoretests";
 
 main();
 
@@ -12,16 +12,16 @@ async function main() {
     store = createEventStore({ connectionString });
 
     await store.add({
-      type: 'UserSignedUp',
+      type: "UserSignedUp",
       date: new Date(),
-      targetType: 'User',
-      targetId: 'bf04b429-4c88-46de-a2ae-15624c75fd56',
+      targetType: "User",
+      targetId: "bf04b429-4c88-46de-a2ae-15624c75fd56",
       payload: {
-        login: 'johndoe'
-      }
+        login: "johndoe",
+      },
     });
 
-    console.log('Event added');
+    console.log("Event added");
   } catch (e) {
     console.error(e);
     process.exit(1);
