@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@arpinum/defender": "1.0.3",
+    "@arpinum/promising": "4.0.0",
     "knex": "0.21.6",
     "pg": "8.4.1",
     "pg-query-stream": "3.3.1"
