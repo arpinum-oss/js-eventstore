@@ -8,7 +8,7 @@
     "build"
   ],
   "scripts": {
-    "lint": "eslint . --fix --ext .ts",
+    "lint": "eslint . --fix --ext .ts,.js",
     "jest:unit": "jest --config ./tests/jest.config.js",
     "jest:e2e": "jest --config ./tests/jest.config.e2e.js",
     "testw": "jest --config ./tests/jest.config.js --watch",
