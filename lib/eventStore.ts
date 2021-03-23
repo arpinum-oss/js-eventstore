@@ -106,8 +106,8 @@ export class EventStore {
 
   protected findInDb(
     query: Knex.QueryBuilder,
-    whereClause: any,
-    streamOptions: any
+    whereClause: Knex.Where,
+    streamOptions: { batchSize: number }
   ): NodeJS.ReadableStream {
     return query
       .where(whereClause)
@@ -123,7 +123,7 @@ export class EventStore {
     };
   }
 
-  private withoutUndefinedKeys(object: object): object {
+  private withoutUndefinedKeys(object: any): any {
     return Object.entries(object).reduce(
       (result, [key, value]) =>
         Object.assign(result, value !== undefined ? { [key]: value } : {}),

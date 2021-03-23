@@ -1,6 +1,8 @@
+import { DbEvent, EventValue } from "../types";
+
 const date = new Date();
 
-export function createEvent() {
+export function createEvent(): EventValue {
   return {
     type: "SomethingHappened",
     date,
@@ -12,14 +14,14 @@ export function createEvent() {
   };
 }
 
-export function createMinimalEvent() {
+export function createMinimalEvent(): EventValue {
   return {
     type: "SomethingHappened",
     date,
   };
 }
 
-export function createAnotherEvent() {
+export function createAnotherEvent(): EventValue {
   return {
     type: "OtherThingHappened",
     date,
@@ -31,7 +33,7 @@ export function createAnotherEvent() {
   };
 }
 
-export function createDbEvent(override = {}) {
+export function createDbEvent(override = {}): DbEvent {
   return {
     id: "1",
     type: "SomethingHappened",

@@ -7,7 +7,7 @@ import { Event, EventValue } from "./types";
 export function assertToBeAnEvent(
   event: EventValue | null | undefined,
   name = "event"
-) {
+): void {
   if (is(event).absent()) {
     return;
   }
@@ -25,7 +25,7 @@ export function assertToBeAnEvent(
 export function assertToBeAConnection(
   connection: Connection,
   name = "connection"
-) {
+): void {
   if (is(connection).absent()) {
     return;
   }
@@ -36,10 +36,10 @@ export function assertToBeAConnection(
 export function assertToBeEventStoreOptions(
   options?: EventStoreOptions,
   name = "options"
-) {
+): void {
   if (is(options).absent()) {
     return;
   }
   assert(options, name).toBeAnObject();
-  assert(options!.tableName, `${name}options#tableName`).toBeAString();
+  assert(options?.tableName, `${name}options#tableName`).toBeAString();
 }

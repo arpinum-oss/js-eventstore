@@ -10,13 +10,14 @@ export class Mapper<TIn, TOut> extends Transform {
     this.mapping = mapping;
   }
 
-  // tslint:disable-next-line:variable-name
-  public _transform(chunk: TIn, _encoding: string, callback: () => void) {
+  public _transform(chunk: TIn, _encoding: string, callback: () => void): void {
     this.push(this.mapping(chunk));
     callback();
   }
 }
 
-export function streamMapper<TIn, TOut>(mapping: Mapping<TIn, TOut>) {
+export function streamMapper<TIn, TOut>(
+  mapping: Mapping<TIn, TOut>
+): Mapper<TIn, TOut> {
   return new Mapper(mapping);
 }

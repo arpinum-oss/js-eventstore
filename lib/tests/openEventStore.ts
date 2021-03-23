@@ -1,19 +1,14 @@
-import Knex = require("knex");
 import { EventStore } from "../eventStore";
-import { DbEvent, DbEventValue } from "../types";
+import { DbEvent } from "../types";
 
 export class OpenEventStore extends EventStore {
-  public findInDb(
-    _1: Knex.QueryBuilder,
-    _2: any,
-    _3: any
-  ): NodeJS.ReadableStream {
+  public findInDb(): NodeJS.ReadableStream {
     return {
       pipe: () => undefined,
     } as any;
   }
 
-  public insertEventsInDb(_: DbEventValue[]): Promise<DbEvent[]> {
+  public insertEventsInDb(): Promise<DbEvent[]> {
     return Promise.resolve([]);
   }
 }
