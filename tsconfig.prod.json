@@ -4,11 +4,5 @@
     "noEmit": false,
     "types": ["node"]
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.e2e.ts",
-    "**/*.spec.js",
-    "**/tests/*.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.js", "**/tests/*.ts"]
 }
