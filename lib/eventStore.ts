@@ -1,5 +1,5 @@
 import { assert } from "@arpinum/defender";
-import * as Knex from "knex";
+import { Knex } from "knex";
 
 import { EventEmitter } from "events";
 import { assertToBeAnEvent, assertToBeEventStoreOptions } from "./defending";

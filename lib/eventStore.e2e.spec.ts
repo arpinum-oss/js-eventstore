@@ -1,4 +1,4 @@
-import Knex = require("knex");
+import { Knex } from "knex";
 import { createClient, createSchema, dropSchema } from "./database";
 import { EventStore } from "./eventStore";
 import {

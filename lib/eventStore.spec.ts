@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import { Knex } from "knex";
 
 import { EventStore } from "./eventStore";
 import { createDbEvent, createEvent } from "./tests";

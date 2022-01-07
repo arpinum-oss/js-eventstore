@@ -1,4 +1,4 @@
-# @arpinum/eventstore [![Build Status](https://travis-ci.org/arpinum-oss/js-eventstore.svg?branch=master)](https://travis-ci.org/arpinum-oss/js-eventstore)
+# @arpinum/eventstore [![Build Status](https://github.com/arpinum-oss/js-eventstore/workflows/CI/badge.svg)](https://github.com/arpinum-oss/js-eventstore/actions?query=workflow%3ACI)
 
 > We won't really know what will happen until it happens.  
 > <cite>Helen Thomas</cite>

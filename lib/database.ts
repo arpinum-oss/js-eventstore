@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import knex, { Knex } from "knex";
 
 export interface Connection {
   connectionString: string;
@@ -6,7 +6,7 @@ export interface Connection {
 
 export function createClient(connection: Connection): Knex {
   const { connectionString } = connection;
-  return Knex({
+  return knex({
     client: "pg",
     connection: connectionString,
   });

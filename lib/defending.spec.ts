@@ -15,7 +15,7 @@ describe("Defending module", () => {
 
     it("should require event to be an object", () => {
       const assertion = () =>
-        defending.assertToBeAnEvent((3 as any) as EventValue);
+        defending.assertToBeAnEvent(3 as any as EventValue);
 
       expect(assertion).toThrow("event must be an object");
     });
@@ -123,7 +123,7 @@ describe("Defending module", () => {
 
     it("should require connection to be an object", () => {
       const assertion = () =>
-        defending.assertToBeAConnection((3 as any) as Connection);
+        defending.assertToBeAConnection(3 as any as Connection);
 
       expect(assertion).toThrow("connection must be an object");
     });
