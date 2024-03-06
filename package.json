@@ -1,6 +1,6 @@
 {
   "name": "@arpinum/eventstore",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "Simple event store based on PostgreSQL",
   "main": "build/index.js",
   "types": "build/index.d.ts",
