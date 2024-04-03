@@ -1,7 +1,7 @@
 import { assert } from "@arpinum/defender";
-import { Knex } from "knex";
 
 import { EventEmitter } from "events";
+import { Knex } from "knex";
 import { assertToBeAnEvent, assertToBeEventStoreOptions } from "./defending";
 import { dbEventToEvent, eventToDbEvent } from "./mapping";
 import { streamMapper } from "./streaming";
@@ -106,7 +106,7 @@ export class EventStore {
 
   protected findInDb(
     query: Knex.QueryBuilder,
-    whereClause: Knex.Where,
+    whereClause: Record<string, unknown>,
     streamOptions: { batchSize: number }
   ): NodeJS.ReadableStream {
     return query
@@ -116,14 +116,16 @@ export class EventStore {
   }
 
   public onEvent(callback: (event: Event) => void): () => void {
-    const localCallback = (data: any) => callback(data);
+    const localCallback = (e: Event) => callback(e);
     this.emitter.on("event", localCallback);
     return () => {
       this.emitter.removeListener("event", localCallback);
     };
   }
 
-  private withoutUndefinedKeys(object: any): any {
+  private withoutUndefinedKeys(
+    object: Record<string, unknown>
+  ): Record<string, unknown> {
     return Object.entries(object).reduce(
       (result, [key, value]) =>
         Object.assign(result, value !== undefined ? { [key]: value } : {}),

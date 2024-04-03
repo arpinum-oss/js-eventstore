@@ -3,7 +3,7 @@ export interface EventValue {
   date: Date;
   targetType?: string;
   targetId?: string;
-  payload?: any;
+  payload?: unknown;
 }
 
 export interface Event extends EventValue {
@@ -15,7 +15,7 @@ export interface DbEventValue {
   date: Date;
   target_type?: string;
   target_id?: string;
-  payload?: any;
+  payload?: unknown;
 }
 
 export interface DbEvent extends DbEventValue {
